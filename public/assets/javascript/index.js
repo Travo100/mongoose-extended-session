@@ -1,4 +1,3 @@
-/* global bootbox */
 $(document).ready(function() {
     $(".movie-favorite").on("click", function(e){
         var movieId = $(this).attr("data-id");

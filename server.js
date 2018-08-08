@@ -30,7 +30,8 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/movie";
 // Connect to the Mongo DB
 mongoose.connect(MONGODB_URI);
 
-// GET all the movies 
+// GET all the movies that favorite is set to false
+// and render them to the index.handlebars page
 app.get("/", function(req, res) {
   db.Movie.find({ favorite: false })
     .then(function(data){
@@ -41,6 +42,8 @@ app.get("/", function(req, res) {
     });
 });
 
+// GET all the movies that favorite is set to true
+// and render them to the favorite.handlebars page
 app.get("/favorites", function(req, res) {
   db.Movie.find({ favorite: true})
     .then(function(data){
@@ -51,6 +54,7 @@ app.get("/favorites", function(req, res) {
     });
 });
 
+// POST a new movie to the mongo database
 app.post("/api/movie", function(req, res){
   db.Movie.create(req.body)
     .then(function(){
@@ -61,6 +65,9 @@ app.post("/api/movie", function(req, res){
     });
 });
 
+// PUT (UPDATE) a movie by its _id 
+// Will set the movie favorite to whatever the value 
+// of the req.body.favorite boolean is
 app.put("/api/movie/:id", function(req, res){
   db.Movie.findByIdAndUpdate(req.params.id, {favorite: req.body.favorite}, {new: true})
     .then(function(dbMovie){
