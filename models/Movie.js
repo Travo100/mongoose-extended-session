@@ -11,7 +11,7 @@ var movieSchema = new Schema({
     title: {
         type: String,
         trim: true,
-        require: true
+        required: true
     },
     rating: {
         type: Number,
@@ -21,6 +21,7 @@ var movieSchema = new Schema({
     },
     director: {
         type: String,
+        trim: true,
         required: true
     },
     favorite: {
