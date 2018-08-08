@@ -4,6 +4,9 @@ var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
 var bodyParser = require("body-parser");
 
+// models route 
+var db = require("./models");
+
 // Set up our port to be either the host's designated port, or 3000
 var PORT = process.env.PORT || 3000;
 
@@ -26,6 +29,46 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/movie";
 
 // Connect to the Mongo DB
 mongoose.connect(MONGODB_URI);
+
+// GET all the movies 
+app.get("/", function(req, res) {
+  db.Movie.find({ favorite: false })
+    .then(function(data){
+      // res.json(data);
+      res.render("index", {movie: data});
+    }).catch(function(err){
+      res.status(404).send(err);
+    });
+});
+
+app.get("/favorites", function(req, res) {
+  db.Movie.find({ favorite: true})
+    .then(function(data){
+      // res.json(data);
+      res.render("favorite", {movie: data});
+    }).catch(function(err){
+      res.status(404).send(err);
+    });
+});
+
+app.post("/api/movie", function(req, res){
+  db.Movie.create(req.body)
+    .then(function(){
+      // res.json(dbMovie);
+      res.redirect("/")
+    }).catch(function(err){
+      res.status(400).send(err);
+    });
+});
+
+app.put("/api/movie/:id", function(req, res){
+  db.Movie.findByIdAndUpdate(req.params.id, {favorite: req.body.favorite}, {new: true})
+    .then(function(dbMovie){
+      res.json(dbMovie);
+    }).catch(function(err){
+      res.status(400).send(err);
+    });
+});
 
 // Listen on the port
 app.listen(PORT, function() {
